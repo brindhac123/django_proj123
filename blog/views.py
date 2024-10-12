@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 import logging
 from .models import Post
+from django.http import Http404  
 
 # Create your views here.
 #static demo data
@@ -21,9 +22,12 @@ def index(request):
 
 def detail(request,post_id):
     #return HttpResponse(f"you are viewing the post details page and the ID is {post_id}")
-    #getting data from model by post modelid
-    post = Post.objects.get(pk=post_id)
-
+    try:
+         #getting data from model by post modelid
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        raise Http404("Post does not Exists!")
+    #static data
     #posts=next((item for item in posts if item['id']== int(post_id)),None)
 
     #logger=logging.getLogger("testing")
