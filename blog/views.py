@@ -20,11 +20,12 @@ def index(request):
     #return HttpResponse("Hello world , you are the blog index")
     return render(request,'blog/index.html',{'blog_title':blog_title,'post':posts})
 
-def detail(request,post_id):
+def detail(request,slug):
     #return HttpResponse(f"you are viewing the post details page and the ID is {post_id}")
     try:
          #getting data from model by post modelid
-        post = Post.objects.get(pk=post_id)
+        post = Post.objects.get(slug=slug)
+        related_posts=Post.objects.filter(category = post.category).exclude(pk=post.id)
     except Post.DoesNotExist:
         raise Http404("Post does not Exists!")
     #static data
@@ -32,7 +33,7 @@ def detail(request,post_id):
 
     #logger=logging.getLogger("testing")
     #logger.debug(f'post variable is {posts}')
-    return render(request,'blog/detail.html',{'posts':post})
+    return render(request,'blog/detail.html',{'posts':post,'related_posts':related_posts})
 
 def old_url_redirect(request):
     return redirect(reverse('blog:new_page_url'))

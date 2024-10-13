@@ -1,13 +1,16 @@
 from typing import Any
-from blog.models import Post
+from blog.models import Category, Post
 from django.core.management.base import BaseCommand # type: ignore
+from django.utils.text import slugify
+import random 
 
 class Command(BaseCommand):
     help="This commands inserts post data"
 
     def handle(self, *args:Any, **options: Any):
-        #delete all existing data
         Post.objects.all().delete()
+        #delete all existing data
+        #Post.objects.all().delete()
 
         titles =[
             "The Future of AI",
@@ -78,8 +81,11 @@ class Command(BaseCommand):
             "https://picsum.photos/id/19/800/400",
             "https://picsum.photos/id/20/800/400",
         ]
+        categories = Category.objects.all()
         for title,content,img_url in zip(titles,contents,img_urls):
-            Post.objects.create(title=title,content=content,img_url=img_url)
+            slug=slugify(title)
+            category=random.choice(categories)
+            Post.objects.create(title=title,content=content,img_url=img_url,slug=slug,category=category)
         self.stdout.write(self.style.SUCCESS("Complete Inserting Data"))
 
 
